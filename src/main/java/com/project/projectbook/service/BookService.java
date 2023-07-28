@@ -3,13 +3,19 @@ package com.project.projectbook.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.projectbook.dto.BookDto;
 import com.project.projectbook.entities.Book;
+import com.project.projectbook.exceptions.DatabaseException;
 import com.project.projectbook.exceptions.ResourceNotFoundException;
 import com.project.projectbook.repositories.BookRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class BookService {
@@ -44,19 +50,29 @@ public class BookService {
 
     @Transactional
     public BookDto updated(Long id, BookDto bookDto) {
-        Book book = bookRepository.getReferenceById(id);
+        try {
+            Book book = bookRepository.getReferenceById(id);
+            book.setTitleBook(bookDto.getTitleBook());
+            book.setAuthor(bookDto.getAuthor());
+            book.setInsight(bookDto.getInsight());
+            book = bookRepository.save(book);
+            return new BookDto(book);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
 
-        book.setTitleBook(bookDto.getTitleBook());
-        book.setAuthor(bookDto.getAuthor());
-        book.setInsight(bookDto.getInsight());
-
-        book = bookRepository.save(book);
-        return new BookDto(book);
+        }
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
-        bookRepository.deleteById(id);
+        try {
+            bookRepository.deleteById(id);
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException("Falha de integridade referencial");
+        }
     }
 
 }
