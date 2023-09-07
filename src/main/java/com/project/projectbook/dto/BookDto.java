@@ -2,11 +2,6 @@ package com.project.projectbook.dto;
 
 import com.project.projectbook.entities.Book;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
 public class BookDto {
 
     private Long id;
@@ -29,6 +24,38 @@ public class BookDto {
         titleBook = bookEntities.getTitleBook();
         author = bookEntities.getAuthor();
         insight = bookEntities.getInsight();
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitleBook() {
+        return this.titleBook;
+    }
+
+    public void setTitleBook(String titleBook) {
+        this.titleBook = titleBook;
+    }
+
+    public String getAuthor() {
+        return this.author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getInsight() {
+        return this.insight;
+    }
+
+    public void setInsight(String insight) {
+        this.insight = insight;
     }
 
 }
