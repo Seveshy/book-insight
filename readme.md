@@ -21,4 +21,6 @@ This project was developed with the purpose of practicing and studying the devel
     - titleBook
     - author
     - insight
+* DELETE INSIGHT - http://localhost:8080/book/{id}
+
  
