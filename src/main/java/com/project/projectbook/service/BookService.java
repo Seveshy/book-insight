@@ -10,9 +10,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.projectbook.dto.BookDto;
+import com.project.projectbook.entities.Author;
 import com.project.projectbook.entities.Book;
 import com.project.projectbook.exceptions.DatabaseException;
 import com.project.projectbook.exceptions.ResourceNotFoundException;
+import com.project.projectbook.repositories.AuthorRepository;
 import com.project.projectbook.repositories.BookRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -22,6 +24,9 @@ public class BookService {
 
     @Autowired
     BookRepository bookRepository;
+
+    @Autowired
+    AuthorRepository authorRepository;
 
     @Transactional(readOnly = true)
     public BookDto findById(Long id) {
@@ -41,8 +46,15 @@ public class BookService {
         Book book = new Book();
 
         book.setTitleBook(bookDto.getTitleBook());
-        book.setAuthor(bookDto.getAuthor());
         book.setInsight(bookDto.getInsight());
+
+        System.out.println("Author ID: " + bookDto.getAuthorId()); // Log para verificar o valor de authorId
+
+        if (bookDto.getAuthorId() != null) {
+            Author author = authorRepository.findById(bookDto.getAuthorId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Autor não encontrado"));
+            book.setAuthor(author);
+        }
 
         book = bookRepository.save(book);
         return new BookDto(book);
@@ -53,8 +65,8 @@ public class BookService {
         try {
             Book book = bookRepository.getReferenceById(id);
             book.setTitleBook(bookDto.getTitleBook());
-            book.setAuthor(bookDto.getAuthor());
             book.setInsight(bookDto.getInsight());
+
             book = bookRepository.save(book);
             return new BookDto(book);
         } catch (EntityNotFoundException e) {

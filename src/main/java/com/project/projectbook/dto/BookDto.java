@@ -6,24 +6,27 @@ public class BookDto {
 
     private Long id;
     private String titleBook;
-    private String author;
+    private Long authorId;
     private String insight;
 
     public BookDto() {
     }
 
-    public BookDto(Long id, String titleBook, String author, String insight) {
-        this.id = id;
-        this.titleBook = titleBook;
-        this.author = author;
-        this.insight = insight;
+    public BookDto(Book bookEntities) {
+        this.id = bookEntities.getId();
+        this.titleBook = bookEntities.getTitleBook();
+        this.insight = bookEntities.getInsight();
+        if (bookEntities.getAuthor() != null) {
+            this.authorId = bookEntities.getAuthor().getId();
+        }
     }
 
-    public BookDto(Book bookEntities) {
-        id = bookEntities.getId();
-        titleBook = bookEntities.getTitleBook();
-        author = bookEntities.getAuthor();
-        insight = bookEntities.getInsight();
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
+
+    public String getInsight() {
+        return this.insight;
     }
 
     public Long getId() {
@@ -42,16 +45,8 @@ public class BookDto {
         this.titleBook = titleBook;
     }
 
-    public String getAuthor() {
-        return this.author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getInsight() {
-        return this.insight;
+    public Long getAuthorId() {
+        return this.authorId;
     }
 
     public void setInsight(String insight) {

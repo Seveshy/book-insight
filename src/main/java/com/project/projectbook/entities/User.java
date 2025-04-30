@@ -24,13 +24,6 @@ public class User {
     private String email;
     private String password;
 
-    @OneToMany(mappedBy = "user")
-    private List<Book> books = new ArrayList<>();
-
-    public List<Book> getBook() {
-        return this.books;
-    }
-
     public User() {
 
     }
@@ -40,7 +33,5 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
-
 
 }
